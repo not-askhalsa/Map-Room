@@ -1,0 +1,2 @@
+"use strict";var Demo;function Init(){var e=document.getElementById("gl-surface"),o=e.getContext("webgl");o||(console.log("Failed to get WebGL context - trying experimental context"),o=e.getContext("experimental-webgl")),o?(Demo=new LightMapDemoScene(o)).Load((function(e){e?(alert("Could not load the demo - see console for more details"),console.error(e)):Demo.Begin()})):alert("Your browser does not support WebGL - please use a different browser\nGoogleChrome works great!")}
+//# sourceMappingURL=index.2635ab83.js.map
