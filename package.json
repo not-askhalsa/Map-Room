@@ -1,0 +1,26 @@
+{
+  "name": "shadow-mapping-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server -c-1 -p 8080",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/not-askhalsa/shadow-mapping-tutorial.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/not-askhalsa/shadow-mapping-tutorial/issues"
+  },
+  "homepage": "https://github.com/not-askhalsa/shadow-mapping-tutorial#readme",
+  "dependencies": {
+    "async": "^3.2.4"
+  },
+  "devDependencies": {
+    "parcel": "^2.7.0"
+  }
+}
