@@ -1,5 +1,8 @@
 'use strict';
 
+let vec4 = glMatrix.vec4;
+let vec3 = glMatrix.vec3;
+
 // Array flattening trick from http://stackoverflow.com/questions/10865025/merge-flatten-a-multidimensional-array-in-javascript
 
 var LightMapDemoScene = function (gl) {
@@ -10,7 +13,6 @@ LightMapDemoScene.prototype.Load = function (cb) {
 	console.log('Loading demo scene');
 
 	var me = this;
-	console.log(me);
 
 	async.parallel({
 		Models: function (callback) {
@@ -34,11 +36,14 @@ LightMapDemoScene.prototype.Load = function (cb) {
 			return;
 		}
 
+		console.log("result",loadResults)
+
 		//
 		// Create Model objects
 		//
-		for (var i = 0; i < loadResults.Models.RoomModel.meshes.length; i++) {
-			var mesh = loadResults.Models.RoomModel.meshes[i];
+		for (var i = 0; i < loadResults.Models[0].meshes.length; i++) {
+			var mesh = loadResults.Models[0].meshes[i];
+			console.log("mesh", mesh)
 			switch (mesh.name) {
 				case 'MonkeyMesh':
 					me.MonkeyMesh = new Model(
@@ -48,12 +53,12 @@ LightMapDemoScene.prototype.Load = function (cb) {
 						mesh.normals,
 						vec4.fromValues(0.8, 0.8, 1.0, 1.0)
 					);
-					mat4.rotate(
+					glMatrix.mat4.rotate(
 						me.MonkeyMesh.world, me.MonkeyMesh.world,
-						glMatrix.toRadian(94.87),
+						glMatrix.glMatrix.toRadian(94.87),
 						vec3.fromValues(0, 0, -1)
 					);
-					mat4.translate(
+					glMatrix.mat4.translate(
 						me.MonkeyMesh.world, me.MonkeyMesh.world,
 						vec4.fromValues(2.07919, -0.98559, 1.75740)
 					);
@@ -63,7 +68,7 @@ LightMapDemoScene.prototype.Load = function (cb) {
 						me.gl, mesh.vertices, [].concat.apply([], mesh.faces),
 						mesh.normals, vec4.fromValues(1, 0, 1, 1)
 					);
-					mat4.translate(
+					glMatrix.mat4.translate(
 						me.TableMesh.world, me.TableMesh.world,
 						vec3.fromValues(1.57116, -0.79374, 0.49672)
 					);
@@ -73,7 +78,7 @@ LightMapDemoScene.prototype.Load = function (cb) {
 						me.gl, mesh.vertices, [].concat.apply([], mesh.faces),
 						mesh.normals, vec4.fromValues(0, 1, 1, 1)	
 					);
-					mat4.translate(
+					glMatrix.mat4.translate(
 						me.SofaMesh.world, me.SofaMesh.world,
 						vec3.fromValues(-3.28768, 0, 0.78448)
 					);
@@ -84,7 +89,7 @@ LightMapDemoScene.prototype.Load = function (cb) {
 						me.gl, mesh.vertices, [].concat.apply([], mesh.faces),
 						mesh.normals, vec4.fromValues(4, 4, 4, 1)
 					);
-					mat4.translate(me.LightMesh.world, me.LightMesh.world,
+					glMatrix.mat4.translate(me.LightMesh.world, me.LightMesh.world,
 						me.lightPosition
 					);
 					break;
@@ -96,6 +101,8 @@ LightMapDemoScene.prototype.Load = function (cb) {
 					break;
 			}
 		}
+		console.log("me", me)
+
 
 		if (!me.MonkeyMesh) {
 			cb('Failed to load monkey mesh'); return;
@@ -124,24 +131,24 @@ LightMapDemoScene.prototype.Load = function (cb) {
 		// Create Shaders
 		//
 		me.NoShadowProgram = CreateShaderProgram(
-			me.gl, loadResults.ShaderCode.NoShadow_VSText,
-			loadResults.ShaderCode.NoShadow_FSText
+			me.gl, loadResults.ShaderCode[0],
+			loadResults.ShaderCode[1]
 		);
 		if (me.NoShadowProgram.error) {
 			cb('NoShadowProgram ' + me.NoShadowProgram.error); return;
 		}
 
 		me.ShadowProgram = CreateShaderProgram(
-			me.gl, loadResults.ShaderCode.Shadow_VSText,
-			loadResults.ShaderCode.Shadow_FSText
+			me.gl, loadResults.ShaderCode[2],
+			loadResults.ShaderCode[3]
 		);
 		if (me.ShadowProgram.error) {
 			cb('ShadowProgram ' + me.ShadowProgram.error); return;
 		}
 
 		me.ShadowMapGenProgram = CreateShaderProgram(
-			me.gl, loadResults.ShaderCode.ShadowMapGen_VSText,
-			loadResults.ShaderCode.ShadowMapGen_FSText
+			me.gl, loadResults.ShaderCode[4],
+			loadResults.ShaderCode[5]
 		);
 		if (me.ShadowMapGenProgram.error) {
 			cb('ShadowMapGenProgram ' + me.ShadowMapGenProgram.error); return;
@@ -245,12 +252,12 @@ LightMapDemoScene.prototype.Load = function (cb) {
 			vec3.fromValues(0, 0, 1)
 		);
 
-		me.projMatrix = mat4.create();
-		me.viewMatrix = mat4.create();
+		me.projMatrix = glMatrix.mat4.create();
+		me.viewMatrix = glMatrix.mat4.create();
 
-		mat4.perspective(
+		glMatrix.mat4.perspective(
 			me.projMatrix,
-			glMatrix.toRadian(90),
+			glMatrix.glMatrix.toRadian(90),
 			me.gl.canvas.clientWidth / me.gl.canvas.clientHeight,
 			0.35,
 			85.0
@@ -260,53 +267,53 @@ LightMapDemoScene.prototype.Load = function (cb) {
 			// Positive X
 			new Camera(
 				me.lightPosition,
-				vec3.add(vec3.create(), me.lightPosition, vec3.fromValues(1, 0, 0)),
-				vec3.fromValues(0, -1, 0)
+				glMatrix.vec3.add(glMatrix.vec3.create(), me.lightPosition, glMatrix.vec3.fromValues(1, 0, 0)),
+				glMatrix.vec3.fromValues(0, -1, 0)
 			),
 			// Negative X
 			new Camera(
 				me.lightPosition,
-				vec3.add(vec3.create(), me.lightPosition, vec3.fromValues(-1, 0, 0)),
-				vec3.fromValues(0, -1, 0)
+				glMatrix.vec3.add(glMatrix.vec3.create(), me.lightPosition, glMatrix.vec3.fromValues(-1, 0, 0)),
+				glMatrix.vec3.fromValues(0, -1, 0)
 			),
 			// Positive Y
 			new Camera(
 				me.lightPosition,
-				vec3.add(vec3.create(), me.lightPosition, vec3.fromValues(0, 1, 0)),
-				vec3.fromValues(0, 0, 1)
+				glMatrix.vec3.add(glMatrix.vec3.create(), me.lightPosition, glMatrix.vec3.fromValues(0, 1, 0)),
+				glMatrix.vec3.fromValues(0, 0, 1)
 			),
 			// Negative Y
 			new Camera(
 				me.lightPosition,
-				vec3.add(vec3.create(), me.lightPosition, vec3.fromValues(0, -1, 0)),
-				vec3.fromValues(0, 0, -1)
+				glMatrix.vec3.add(glMatrix.vec3.create(), me.lightPosition, glMatrix.vec3.fromValues(0, -1, 0)),
+				glMatrix.vec3.fromValues(0, 0, -1)
 			),
 			// Positive Z
 			new Camera(
 				me.lightPosition,
-				vec3.add(vec3.create(), me.lightPosition, vec3.fromValues(0, 0, 1)),
-				vec3.fromValues(0, -1, 0)
+				glMatrix.vec3.add(glMatrix.vec3.create(), me.lightPosition, glMatrix.vec3.fromValues(0, 0, 1)),
+				glMatrix.vec3.fromValues(0, -1, 0)
 			),
 			// Negative Z
 			new Camera(
 				me.lightPosition,
-				vec3.add(vec3.create(), me.lightPosition, vec3.fromValues(0, 0, -1)),
-				vec3.fromValues(0, -1, 0)
+				glMatrix.vec3.add(glMatrix.vec3.create(), me.lightPosition, glMatrix.vec3.fromValues(0, 0, -1)),
+				glMatrix.vec3.fromValues(0, -1, 0)
 			),
 		];
 		me.shadowMapViewMatrices = [
-			mat4.create(),
-			mat4.create(),
-			mat4.create(),
-			mat4.create(),
-			mat4.create(),
-			mat4.create()
+			glMatrix.mat4.create(),
+			glMatrix.mat4.create(),
+			glMatrix.mat4.create(),
+			glMatrix.mat4.create(),
+			glMatrix.mat4.create(),
+			glMatrix.mat4.create()
 		];
-		me.shadowMapProj = mat4.create();
-		me.shadowClipNearFar = vec2.fromValues(0.05, 15.0);
-		mat4.perspective(
+		me.shadowMapProj = glMatrix.mat4.create();
+		me.shadowClipNearFar = glMatrix.vec2.fromValues(0.05, 15.0);
+		glMatrix.mat4.perspective(
 			me.shadowMapProj,
-			glMatrix.toRadian(90),
+			glMatrix.glMatrix.toRadian(90),
 			1.0,
 			me.shadowClipNearFar[0],
 			me.shadowClipNearFar[1]
@@ -414,7 +421,7 @@ LightMapDemoScene.prototype.End = function () {
 // Private Methods
 //
 LightMapDemoScene.prototype._Update = function (dt) {
-	mat4.rotateZ(
+	glMatrix.mat4.rotateZ(
 		this.MonkeyMesh.world, this.MonkeyMesh.world,
 		dt / 1000 * 2 * Math.PI *    0.3
 	);

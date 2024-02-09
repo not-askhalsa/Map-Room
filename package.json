@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/not-askhalsa/shadow-mapping-tutorial#readme",
   "dependencies": {
-    "async": "^3.2.4"
+    "async": "^3.2.4",
+    "gl-matrix": "^3.4.3"
   },
   "devDependencies": {
     "parcel": "^2.7.0"

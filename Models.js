@@ -1,5 +1,8 @@
 'use strict';
 
+let mat4 = glMatrix.mat4;
+
+
 var Model = function (gl, vertices, indices, normals, color) {
 	this.vbo = gl.createBuffer();
 	this.ibo = gl.createBuffer();
