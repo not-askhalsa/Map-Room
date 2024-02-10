@@ -1,25 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<style>
-	* {
-		margin: 0;
-		padding: 0;
-		position: absolute;
-	}
-	</style>
-	<title>Shadow Mapping Tutorial</title>
-</head>
-<body onload="Init();">
-	<canvas id="gl-surface">
-		Get a <a href="http://chrome.google.com">less stupid</a> browser
-	</canvas>
-	<script src="./async.js"></script>
-	<script src="./glmatrix/gl-matrix.js"></script>
+  <head>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        position: absolute;
+      }
+    </style>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <title>Shadow Mapping Tutorial</title>
+  </head>
+  <body onload="Init();">
+	<script type="text/javascript">
+		Toastify({
+		  text: "Use W/A/S/D and arrow keys to navigate",
+		  duration: 6000,
+		  close: false,
+		  gravity: "top", 
+		  position: "right", 
+		  stopOnFocus: true,
+		  style: {
+			height: "3em",
+			display: "flex",
+			alignItems: "center",
+			background: "linear-gradient(to right, #00b09b, #96c93d)",
+		  },
+		}).showToast();
+	  </script>
+    <canvas id="gl-surface"> Get a <a href="http://chrome.google.com">less stupid</a> browser </canvas>
+    <script src="./async.js"></script>
+    <script src="./glmatrix/gl-matrix.js"></script>
 
-	<script src="app.js"></script>
-	<script src="util.js"></script>
-	<script src="Models.js"></script>
-	<script src="LightMapDemoScene.js"></script>
-</body>
+    <!-- <script src="shaders"></script> -->
+    <script src="app.js"></script>
+    <script src="util.js"></script>
+    <script src="Models.js"></script>
+    <script src="LightMapDemoScene.js"></script>
+  </body>
 </html>
